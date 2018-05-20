@@ -3,7 +3,7 @@
 To install, clone directly to your home directory. Or get my ansible environment bootstrap from https://github.com/aengusmcmillin/env.git and use ansible
 
 ** Garbage Collection Settings
-We want to up the 
+We want to up the GC in the beginning for faster loading, and then reduce it later for lower memory usage
 #+BEGIN_SRC emacs-lisp
 
 (setq gc-cons-threshold (* 100 1024 1024)
