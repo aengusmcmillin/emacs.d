@@ -9,7 +9,6 @@ Clone to your home directory. Alternatively, if you want my whole linux/osx envi
 
 * Startup
 ** Initialize packages
-
 #+BEGIN_SRC emacs-lisp :tangle yes
 (package-initialize)
 
@@ -17,7 +16,6 @@ Clone to your home directory. Alternatively, if you want my whole linux/osx envi
 #+END_SRC
    
 ** Configure package archives
-
 #+BEGIN_SRC emacs-lisp :tangle yes
 (setq package-archives
     '(("gnu" . "https://elpa.gnu.org/packages/")
@@ -32,6 +30,7 @@ Clone to your home directory. Alternatively, if you want my whole linux/osx envi
 		      which-key
 		      general
 		      magit
+		      rust-mode
 		      doom-themes))
 #+END_SRC
    
@@ -66,7 +65,7 @@ We want to up the GC in the beginning for faster loading, and then reduce it lat
 * Personal Info
 #+BEGIN_SRC emacs-lisp :tangle yes
 (setq user-full-name "Aengus McMillin"
-      user-mail-address "contact@aengusmcmillin.com")
+      user-mail-address "aengusmcmillin@gmail.com")
 #+END_SRC
 
 * Packages
@@ -74,6 +73,7 @@ We want to up the GC in the beginning for faster loading, and then reduce it lat
 #+BEGIN_SRC emacs-lisp :tangle yes
 (evil-mode)
 #+END_SRC
+
 ** =magit=
 #+BEGIN_SRC emacs-lisp :tangle yes
 (global-set-key (kbd "C-x g") 'magit-status)
@@ -85,3 +85,5 @@ We want to up the GC in the beginning for faster loading, and then reduce it lat
 #+BEGIN_SRC emacs-lisp :tangle yes
 (load-theme 'doom-one t)
 #+END_SRC
+ 
+* Languages
