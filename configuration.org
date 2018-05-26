@@ -8,50 +8,59 @@ Clone to your home directory. Alternatively, if you want my whole linux/osx envi
 =git clone git@github.com/aengusmcmillin/emacs.d.git ~/.emacs.d=
 
 * Startup
-** Garbage Collection Settings
-We want to up the GC in the beginning for faster loading, and then reduce it later for lower memory usage
-
-#+BEGIN_SRC emacs-lisp :tangle yes
-    (setq gc-cons-threshold (* 100 1024 1024)
-	gc-cons-percentage 0.6)
-#+END_SRC
-
 ** Initialize packages
 
 #+BEGIN_SRC emacs-lisp :tangle yes
-    (package-initialize)
-    (setq custom-file (expand-file-name (concat user-emacs-directory "custom-settings.el")))
-    (load custom-file t t)
+(package-initialize)
+
+(require 'package)
 #+END_SRC
    
 ** Configure package archives
 
 #+BEGIN_SRC emacs-lisp :tangle yes
-    (setq package-archives
-	'(("gnu" . "https://elpa.gnu.org/packages/")
-	("melpa" . "https://melpa.org/packages/")
-	("org" . "https://orgmode.org/elpa/")))
+(setq package-archives
+    '(("gnu" . "https://elpa.gnu.org/packages/")
+      ("melpa" . "https://melpa.org/packages/")
+      ("org" . "https://orgmode.org/elpa/")))
 #+END_SRC
    
-** Configure use-package and delight
+** Declare packages to use
 #+BEGIN_SRC emacs-lisp :tangle yes
+(defvar my-packages '(evil
+		      projectile
+		      which-key
+		      general
+		      magit
+		      doom-themes))
+#+END_SRC
+   
+** Pre-Configure packages
+#+BEGIN_SRC emacs-lisp :tangle yes
+(setq evil-want-C-u-scroll t)
+#+END_SRC
+   
+** Load packages
+#+BEGIN_SRC emacs-lisp :tangle yes
+(dolist (p my-packages)
+  (unless (package-installed-p p)
     (package-refresh-contents)
-    (unless (and (package-installed-p 'use-package)
-		(package-installed-p 'delight))
-    (package-refresh-contents)
-    (package-install 'use-package)
-    (package-install 'delight))
+    (package-install p))
+  (add-to-list 'package-selected-packages p))
+#+END_SRC
 
-    (eval-when-compile
-    (require 'use-package)
-    (require 'delight))
+** Garbage Collection Settings
+We want to up the GC in the beginning for faster loading, and then reduce it later for lower memory usage
 
-    (setq use-package-always-ensure t
-	use-package-verbose t
-	use-package-check-before-init t
-	use-package-always-defer t)
+#+BEGIN_SRC emacs-lisp :tangle yes
+(setq gc-cons-threshold (* 100 1024 1024)
+    gc-cons-percentage 0.6)
+#+END_SRC
 
-    (setq byte-compile--use-old-handlers nil)
+** Set custom file
+#+BEGIN_SRC emacs-lisp :tangle yes
+(setq custom-file (expand-file-name (concat user-emacs-directory "custom-settings.el")))
+(load custom-file t)
 #+END_SRC
 
 * Personal Info
@@ -60,118 +69,19 @@ We want to up the GC in the beginning for faster loading, and then reduce it lat
       user-mail-address "contact@aengusmcmillin.com")
 #+END_SRC
 
-* Core Settings
-** Backups
+* Packages
+** =evil=
 #+BEGIN_SRC emacs-lisp :tangle yes
-    (setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
-
-    (setq delete-old-versions -1)
-    (setq version-control t)
-    (setq vc-make-backup-files t)
-    (setq auto-save-file-name-transforms '((".*" "~/.emacs.d/auto-save-list/" t)))
+(evil-mode)
 #+END_SRC
-
-** History
+** =magit=
 #+BEGIN_SRC emacs-lisp :tangle yes
-    (setq savehist-file "~/.emacs.d/savehist")
-    (savehist-mode 1)
-    (setq history-length t)
-    (setq history-delete-duplicates t)
-    (setq savehist-save-minibuffer-history 1)
-    (setq savehist-additional-variables
-	  '(kill-ring
-	    search-ring
-	    regexp-search-ring))
-#+END_SRC
+(global-set-key (kbd "C-x g") 'magit-status)
 
-** Window Configuration
+(add-hook 'with-editor-mode-hook 'evil-normal-state)
+#+END_SRC
+* Appearance
+** Load theme
 #+BEGIN_SRC emacs-lisp :tangle yes
-(tool-bar-mode -1)
-(menu-bar-mode -1)
+(load-theme 'doom-one t)
 #+END_SRC
-
-** =Dired Mode=
-#+BEGIN_SRC emacs-lisp :tangle yes
-    (put 'dired-find-alternate-file 'disabled nil)
-#+END_SRC
-
-* Keybinds
-** =which-key=
-
-#+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package which-key
-    :demand t
-    :config
-    (progn
-	(which-key-mode)
-	(setq which-key-sort-order 'which-key-key-order-alpha
-	    which-key-sort-uppercase-first nil
-	    which-key-prefix-prefix nil
-	    which-key-idle-delay 0.3)))
-
-(use-package projectile)
-#+END_SRC
-
-** =General=
-#+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package general
-    :demand
-    :config
-    (progn
-	(general-evil-setup)))
-#+END_SRC
-
-* Magit
-** Setup
-#+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package magit)
-#+END_SRC
-** Configuration
-#+BEGIN_SRC emacs-lisp :tangle yes
-    (global-set-key (kbd "C-x g") 'magit-status)
-#+END_SRC
-
-* Other
-
-#+BEGIN_SRC emacs-lisp :tangle yes
-(use-package evil
-  :ensure t
-  :init (setq evil-want-C-u-scroll t)
-  :config (evil-mode 1))
-
-(use-package doom-themes
-  :ensure t
-  :init 
-  (load-theme 'doom-one t))
-
-#+END_SRC
-
-To install, clone directly to your home directory. Or get my ansible environment bootstrap from https://github.com/aengusmcmillin/env.git and use ansible
-
-
-** No backup files
-
-#+BEGIN_SRC emacs-lisp :tangle yes
-    (setq make-backup-files nil)
-#+END_SRC
-
-** Change auto-save location
-I don't want to keep the autosave files next to the actual file
-
-#+BEGIN_SRC emacs-lisp :tangle yes
-    (setq backup-directory-alist
-	`((".*" . ,temporary-file-directory)))
-    (setq auto-save-file-name-transforms
-	`((".*" ,temporary-file-directory t)))
-#+END_SRC
-
-
-* Conclusion
-
-#+BEGIN_SRC emacs-lisp
-(add-hook 'emacs-startup-hook
-          (lambda () (message (concat "Booted in: " (emacs-init-time))))
-          (setq gc-cons-threshold (* 20 1024 1024)
-                gc-cons-percentage 0.1))
-#+END_SRC
-  
