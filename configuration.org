@@ -77,6 +77,21 @@ We want to up the GC in the beginning for faster loading, and then reduce it lat
 ** =magit=
 #+BEGIN_SRC emacs-lisp :tangle yes
 (global-set-key (kbd "C-x g") 'magit-status)
+#+END_SRC
+#
+* Languages
+** Obj-c
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'auto-mode-alist '("\\.mm$" . objc-mode))
+#+END_SRC
+
+** Rust
+#+BEGIN_SRC emacs-lisp
+(use-package rust-mode
+  :ensure t)
+#+END_SRC
+
+* Conclusion
 
 (add-hook 'with-editor-mode-hook 'evil-normal-state)
 #+END_SRC
