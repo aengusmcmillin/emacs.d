@@ -31,6 +31,9 @@ Clone to your home directory. Alternatively, if you want my whole linux/osx envi
 		      general
 		      magit
 		      rust-mode
+		      racer
+		      cargo
+		      exec-path-from-shell
 		      doom-themes))
 #+END_SRC
    
@@ -78,17 +81,29 @@ We want to up the GC in the beginning for faster loading, and then reduce it lat
 #+BEGIN_SRC emacs-lisp :tangle yes
 (global-set-key (kbd "C-x g") 'magit-status)
 #+END_SRC
-#
+
+** =exec_path=
+#+BEGIN_SRC emacs-lisp :tangle yes
+(exec-path-from-shell-initialize)
+#+END_SRC
+
 * Languages
 ** Obj-c
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle yes
 (add-to-list 'auto-mode-alist '("\\.mm$" . objc-mode))
 #+END_SRC
 
 ** Rust
-#+BEGIN_SRC emacs-lisp
-(use-package rust-mode
-  :ensure t)
+#+BEGIN_SRC emacs-lisp :tangle yes
+(add-hook 'rust-mode-hook 'cargo-minor-mode)
+
+(setq racer-cmd "~/.cargo/bin/racer")
+(setq racer-rust-src-path "/Users/aengusm/dev/rust/src")
+
+(add-hook 'rust-mode-hook #'racer-mode)
+(add-hook 'racer-mode-hook #'eldoc-mode)
+(add-hook 'racer-mode-hook #'company-mode)
+
 #+END_SRC
 
 * Conclusion
