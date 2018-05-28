@@ -27,6 +27,8 @@ Clone to your home directory. Alternatively, if you want my whole linux/osx envi
 #+BEGIN_SRC emacs-lisp :tangle yes
 (defvar my-packages '(evil
 		      projectile
+		      helm
+		      helm-projectile
 		      which-key
 		      general
 		      magit
@@ -65,6 +67,14 @@ We want to up the GC in the beginning for faster loading, and then reduce it lat
 (load custom-file t)
 #+END_SRC
 
+** Auto Save Settings
+#+BEGIN_SRC emacs-lisp :tangle yes
+(setq delete-old-versions -1)
+(setq version-control t)
+(setq vc-make-backup-files t)
+(setq auto-save-file-name-transforms '((".*" "~/.emacs.d/auto-save-list/" t)))
+#+END_SRC
+
 * Personal Info
 #+BEGIN_SRC emacs-lisp :tangle yes
 (setq user-full-name "Aengus McMillin"
@@ -72,6 +82,11 @@ We want to up the GC in the beginning for faster loading, and then reduce it lat
 #+END_SRC
 
 * Packages
+** =helm=
+#+BEGIN_SRC 
+(global-set-key (kbd "M-x") 'helm-M-x)
+#+END_SRC
+
 ** =evil=
 #+BEGIN_SRC emacs-lisp :tangle yes
 (evil-mode)
@@ -110,10 +125,32 @@ We want to up the GC in the beginning for faster loading, and then reduce it lat
 
 (add-hook 'with-editor-mode-hook 'evil-normal-state)
 #+END_SRC
+   
+** =projectile=
+#+BEGIN_SRC emacs-lisp :tangle yes
+(setq projectile-keymap-prefix (kbd "C-c p"))
+(setq projectile-completion-system 'default)
+(setq projectile-enable-caching t)
+(setq projectile-indexing-method 'git)
+#+END_SRC
+* Org
+#+BEGIN_SRC emacs-lisp :tangle yes
+(setq org-src-fontify-natively t)
+#+END_SRC
 * Appearance
 ** Load theme
 #+BEGIN_SRC emacs-lisp :tangle yes
 (load-theme 'doom-one t)
 #+END_SRC
+   
+** Menu and Tool Bars
+#+BEGIN_SRC emacs-lisp :tangle yes
+(menu-bar-mode -1)
+(tool-bar-mode -1)
+#+END_SRC
  
 * Languages
+** Rust
+#+BEGIN_SRC emacs-lisp :tangle yes
+(setq rust-format-on-save t)
+#+END_SRC
